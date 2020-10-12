@@ -2,18 +2,33 @@ import React, {useState, useEffect} from 'react';
 import { TextInput, KeyboardAvoidingView, StyleSheet, View, Button } from 'react-native';
 import ProtoTypes from 'prop-types';
 
-const AddContactForm = props => {
+const AddContactForm = ({route, navigation}) => {
     const [date, getDate] = useState({name: '', phone: ''});
     const {name, phone} = date
-    const [validForm, isValidForm] = useState(false);
+    const [isvalidForm, getValidForm] = useState(false);
 
-    const getHandler = key => val => getDate({...date,[key]: val})
+    useEffect(() => {
+      if(name !== "" || phone !== "") {
+        validForm()
+      }
+    })
+    const getHandler = key => val => getDate({...date,[key]: val});
 
-    const submit = () => {
-        props.onSubmit(date)
+    const  validForm = () => {
+      if(+phone >= 0 && phone.length === 10 && name.length >=5){
+        getValidForm(false)
+      }else{
+        getValidForm(true)
+        }
+      };
+
+    const submit = () =>  {
+      route.params.addContacts(date);
+      navigation.navigate("FirstView")
     }
+
     return(
-        <KeyboardAvoidingView behavior="padding" style={style.container}>
+        <View behavior="padding" style={style.container}>
           <TextInput
            style={style.inputs}
            value={name}
@@ -25,8 +40,8 @@ const AddContactForm = props => {
            onChangeText={getHandler('phone')}
            placeholder="Phone Number"
            keyboardType="numeric" />
-           <Button title="go" onPress={submit}/>
-        </KeyboardAvoidingView >
+           <Button title="Add" onPress={submit} disabled={isvalidForm}/>
+        </View >
       )
 
 }
@@ -36,7 +51,9 @@ const style = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       paddingTop: 2,
-      justifyContent: 'center'
+      justifyContent: 'center',
+      marginHorizontal: 30,
+      paddingHorizontal: 30
     },
     inputs: {
       padding: 5,
@@ -46,6 +63,7 @@ const style = StyleSheet.create({
       marginHorizontal: 10,
       paddingHorizontal: 10,
       paddingVertical: 10,
-      borderRadius: 6
+      borderRadius: 6,
+      marginBottom: 30
     },
   })

@@ -3,7 +3,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const Row = props => {
-  console.log(props.name, props.phone)
   return(
   <View style={styles.row}>
     <Text>{props.name}</Text>
